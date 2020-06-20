@@ -5,10 +5,6 @@
 	(global = global || self, global.SmoothScroll = factory());
 }(this, (function () { 'use strict';
 
-	//
-	// Default settings
-	//
-
 	var defaults = {
 
 		// Selectors
@@ -36,16 +32,8 @@
 		emitEvents: true
 
 	};
-
-
-	//
 	// Utility Methods
-	//
-
-	/**
-	 * Check if browser supports required methods
-	 * @return {Boolean} Returns true if all required methods are supported
-	 */
+		      
 	var supports = function () {
 		return (
 			'querySelector' in document &&
@@ -55,11 +43,8 @@
 		);
 	};
 
-	/**
-	 * Merge two or more objects together.
-	 * @param   {Object}   objects  The objects to merge together
-	 * @returns {Object}            Merged values of defaults and options
-	 */
+	// Merge two or more objects together.
+	
 	var extend = function () {
 		var merged = {};
 		Array.prototype.forEach.call(arguments, function (obj) {
@@ -71,10 +56,8 @@
 		return merged;
 	};
 
-	/**
-	 * Check to see if user prefers reduced motion
-	 * @param  {Object} settings Script settings
-	 */
+	 // Check to see if user prefers reduced motion
+	
 	var reduceMotion = function () {
 		if ('matchMedia' in window && window.matchMedia('(prefers-reduced-motion)').matches) {
 			return true;
@@ -82,21 +65,15 @@
 		return false;
 	};
 
-	/**
-	 * Get the height of an element.
-	 * @param  {Node} elem The element to get the height of
-	 * @return {Number}    The element's height in pixels
-	 */
+	 // Get the height of an element.
+	 
 	var getHeight = function (elem) {
 		return parseInt(window.getComputedStyle(elem).height, 10);
 	};
 
-	/**
-	 * Escape special characters for use with querySelector
-	 * @author Mathias Bynens
-	 * @link https://github.com/mathiasbynens/CSS.escape
-	 * @param {String} id The anchor ID to escape
-	 */
+	
+	 // Escape special characters for use with querySelector
+	 
 	var escapeCharacters = function (id) {
 
 		// Remove leading hash
@@ -124,21 +101,17 @@
 			}
 
 			if (
-				// If the character is in the range [\1-\1F] (U+0001 to U+001F) or is
-				// U+007F, […]
+				
 				(codeUnit >= 0x0001 && codeUnit <= 0x001F) || codeUnit == 0x007F ||
-				// If the character is the first character and is in the range [0-9]
-				// (U+0030 to U+0039), […]
+				
 				(index === 0 && codeUnit >= 0x0030 && codeUnit <= 0x0039) ||
-				// If the character is the second character and is in the range [0-9]
-				// (U+0030 to U+0039) and the first character is a `-` (U+002D), […]
 				(
 					index === 1 &&
 					codeUnit >= 0x0030 && codeUnit <= 0x0039 &&
 					firstCodeUnit === 0x002D
 				)
 			) {
-				// http://dev.w3.org/csswg/cssom/#escape-a-character-as-code-point
+				// https://drafts.csswg.org/cssom/#escape-a-character-as-code-point
 				result += '\\' + codeUnit.toString(16) + ' ';
 				continue;
 			}
@@ -171,13 +144,8 @@
 
 	};
 
-	/**
-	 * Calculate the easing pattern
-	 * @link https://gist.github.com/gre/1650294
-	 * @param   {Object} settings Easing pattern
-	 * @param   {Number} time     Time animation should take to complete
-	 * @returns {Number}
-	 */
+	 // Calculate the easing pattern
+	
 	var easingPattern = function (settings, time) {
 		var pattern;
 
@@ -201,10 +169,9 @@
 		return pattern || time; // no easing, no acceleration
 	};
 
-	/**
-	 * Determine the document's height
-	 * @returns {Number}
-	 */
+	 // Determine the document's height
+	  // @returns {Number}
+	 
 	var getDocumentHeight = function () {
 		return Math.max(
 			document.body.scrollHeight, document.documentElement.scrollHeight,
@@ -213,15 +180,8 @@
 		);
 	};
 
-	/**
-	 * Calculate how far to scroll
-	 * Clip support added by robjtede - https://github.com/cferdinandi/smooth-scroll/issues/405
-	 * @param {Element} anchor       The anchor element to scroll to
-	 * @param {Number}  headerHeight Height of a fixed header, if any
-	 * @param {Number}  offset       Number of pixels by which to offset scroll
-	 * @param {Boolean} clip         If true, adjust scroll distance to prevent abrupt stops near the bottom of the page
-	 * @returns {Number}
-	 */
+	 // Calculate how far to scroll
+	 
 	var getEndLocation = function (anchor, headerHeight, offset, clip) {
 		var location = 0;
 		if (anchor.offsetParent) {
@@ -237,21 +197,14 @@
 			return location;
 	};
 
-	/**
-	 * Get the height of the fixed header
-	 * @param  {Node}   header The header
-	 * @return {Number}        The height of the header
-	 */
+	 // Get the height of the fixed header
 	var getHeaderHeight = function (header) {
 		return !header ? 0 : (getHeight(header) + header.offsetTop);
 	};
 
-	/**
-	 * Calculate the speed to use for the animation
-	 * @param  {Number} distance The distance to travel
-	 * @param  {Object} settings The plugin settings
-	 * @return {Number}          How fast to animate
-	 */
+	
+	// Calculate the speed to use for the animation
+
 	var getSpeed = function (distance, settings) {
 		var speed = settings.speedAsDuration ? settings.speed : Math.abs(distance / 1000 * settings.speed);
 		if (settings.durationMax && speed > settings.durationMax) return settings.durationMax;
@@ -280,12 +233,6 @@
 
 	};
 
-	/**
-	 * Update the URL
-	 * @param  {Node}    anchor  The anchor that was scrolled to
-	 * @param  {Boolean} isNum   If true, anchor is a number
-	 * @param  {Object}  options Settings for Smooth Scroll
-	 */
 	var updateURL = function (anchor, isNum, options) {
 
 		// Bail if the anchor is a number
@@ -306,11 +253,11 @@
 
 	};
 
-	/**
-	 * Bring the anchored element into focus
-	 * @param {Node}     anchor      The anchor element
-	 * @param {Number}   endLocation The end location to scroll to
-	 * @param {Boolean}  isNum       If true, scroll is to a position rather than an element
+	/*
+	  Bring the anchored element into focus
+	   anchor      The anchor element
+	   endLocation The end location to scroll to
+	   isNum       If true, scroll is to a position rather than an element
 	 */
 	var adjustFocus = function (anchor, endLocation, isNum) {
 
@@ -334,11 +281,11 @@
 	};
 
 	/**
-	 * Emit a custom event
-	 * @param  {String} type    The event type
-	 * @param  {Object} options The settings object
-	 * @param  {Node}   anchor  The anchor element
-	 * @param  {Node}   toggle  The toggle element
+	  Emit a custom event
+	     type    The event type
+	     options The settings object
+	     anchor  The anchor element
+	     toggle  The toggle element
 	 */
 	var emitEvent = function (type, options, anchor, toggle) {
 		if (!options.emitEvents || typeof window.CustomEvent !== 'function') return;
@@ -353,24 +300,17 @@
 	};
 
 
-	//
 	// SmoothScroll Constructor
-	//
 
 	var SmoothScroll = function (selector, options) {
 
-		//
 		// Variables
-		//
-
 		var smoothScroll = {}; // Object for public APIs
 		var settings, toggle, fixedHeader, animationInterval;
 
 
-		//
 		// Methods
-		//
-
+		
 		/**
 		 * Cancel a scroll-in-progress
 		 */
@@ -383,9 +323,9 @@
 
 		/**
 		 * Start/stop the scrolling animation
-		 * @param {Node|Number} anchor  The element or position to scroll to
-		 * @param {Element}     toggle  The element that toggled the scroll event
-		 * @param {Object}      options
+		      anchor  The element or position to scroll to
+		      toggle  The element that toggled the scroll event
+		      options
 		 */
 		smoothScroll.animateScroll = function (anchor, toggle, options) {
 
@@ -411,13 +351,7 @@
 			var timeLapsed = 0;
 			var speed = getSpeed(distance, _settings);
 			var start, percentage, position;
-
-			/**
-			 * Stop the scroll animation when it reaches its target (or the bottom/top of page)
-			 * @param {Number} position Current position on the page
-			 * @param {Number} endLocation Scroll to location
-			 * @param {Number} animationInterval How much to scroll on this loop
-			 */
+			
 			var stopAnimateScroll = function (position, endLocation) {
 
 				// Get the current location
@@ -460,10 +394,6 @@
 				}
 			};
 
-			/**
-			 * Reset position to fix weird iOS bug
-			 * @link https://github.com/cferdinandi/smooth-scroll/issues/45
-			 */
 			if (window.pageYOffset === 0) {
 				window.scrollTo(0, 0);
 			}
@@ -492,14 +422,13 @@
 		var clickHandler = function (event) {
 
 			// Don't run if event was canceled but still bubbled up
-			// By @mgreter - https://github.com/cferdinandi/smooth-scroll/pull/462/
+			
 			if (event.defaultPrevented) return;
 
 			// Don't run if right-click or command/control + click or shift + click
 			if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey) return;
 
 			// Check if event.target has closest() method
-			// By @totegi - https://github.com/cferdinandi/smooth-scroll/pull/401/
 			if (!('closest' in event.target)) return;
 
 			// Check if a smooth scroll link was clicked
@@ -584,7 +513,7 @@
 
 		/**
 		 * Initialize Smooth Scroll
-		 * @param {Object} options User settings
+		      options User settings
 		 */
 		var init = function () {
 
@@ -609,16 +538,12 @@
 		};
 
 
-		//
 		// Initialize plugin
-		//
-
+		
 		init();
 
 
-		//
 		// Public APIs
-		//
 
 		return smoothScroll;
 
